@@ -1,0 +1,49 @@
+import requests
+import json
+
+url = "https://drivemyjob.it/wp-admin/admin-ajax.php"
+
+actions = [
+    "complianz_get_policy",
+    "cmplz_document",
+    "cmplz_set_cookies",
+    "cmplz_consent_statistics",
+    "cmplz_geo",
+    "cmplz_update_consent",
+    "elementor_ajax",
+    "elementor_editor_ajax",
+    "elementor_save_builder",
+    "elementor_upload_template",
+    "elementor_get_template",
+    "elementor_library_get_template_content",
+    "elementor_preview_template",
+    "generate_font_css",
+    "get_editor_panel_categories",
+    "get_editor_panel_elements",
+    "wp_ajax_nopriv_get_elementor_data"
+]
+
+def test_action(action, method="POST", json_mode=False):
+    headers = {}
+    if json_mode:
+        headers["Content-Type"] = "application/json"
+        payload = json.dumps({"action": action})
+    else:
+        payload = {"action": action}
+
+    try:
+        if method == "POST":
+            r = requests.post(url, data=payload if not json_mode else None,
+                              json=payload if json_mode else None, headers=headers, timeout=10)
+        else:
+            r = requests.get(url, params=payload, headers=headers, timeout=10)
+
+        print(f"[{method}] {action} ({'json' if json_mode else 'form'}) → {r.status_code} | {len(r.text)} bytes")
+    except Exception as e:
+        print(f"[!] Error testing {action}: {e}")
+
+print(f"[+] Starting AJAX scan on {url}")
+for action in actions:
+    for method in ["POST", "GET"]:
+        for json_mode in [False, True]:
+            test_action(action, method, json_mode)
