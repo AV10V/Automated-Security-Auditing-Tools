@@ -1,7 +1,7 @@
 import requests
 import json
 
-url = "https://drivemyjob.it/wp-admin/admin-ajax.php"
+url = "https://site.com/wp-admin/admin-ajax.php"
 
 actions = [
     "complianz_get_policy",
